@@ -6,7 +6,7 @@
  * For more detail (instruction and wiring diagram), visit https://esp32io.com/tutorials/esp32-motion-sensor
  */
 #define LED 2
-const int PIN_TO_SENSOR = 26; // GIOP19 pin connected to OUTPUT pin of sensor
+const int PIN_TO_SENSOR =19; // GIOP19 pin connected to OUTPUT pin of sensor
 int pinStateCurrent   = LOW;  // current state of pin
 int pinStatePrevious  = LOW;  // previous state of pin
 
@@ -22,19 +22,19 @@ void loop() {
   pinStateCurrent = digitalRead(PIN_TO_SENSOR);   // read new state
   Serial.println(pinStateCurrent);
     Serial.println(pinStatePrevious);
-    delay (150);
+    
   if (pinStatePrevious == LOW && pinStateCurrent == HIGH) {   // pin state change: LOW -> HIGH
     
     Serial.println("Motion detected!");
-     delay(50);
-    digitalWrite(LED,LOW);
+     delay(30);
+    digitalWrite(LED,HIGH);
     // TODO: turn on alarm, light or activate a device ... here
   }
   else
   if (pinStatePrevious == HIGH && pinStateCurrent == LOW) {   // pin state change: HIGH -> LOW
     Serial.println("Motion stopped!");
     delay(50);
-     digitalWrite(LED,HIGH);
+     digitalWrite(LED,LOW);
     // TODO: turn off alarm, light or deactivate a device ... here
   }
 }

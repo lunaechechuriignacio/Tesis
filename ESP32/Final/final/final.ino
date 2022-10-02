@@ -1,7 +1,7 @@
 
 #define LED 2/// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
 
-const int pinConexion = 26; // el numero de pin del esp32 conectado al sensor Pir
+const int pirConexion = 19; // el numero de pin del esp32 conectado al sensor Pir
 const int relay_0 = 14; // el numero de pin del esp32 conectado relay
 const int relay_1 = 27;// el numero de pin del esp32 conectado relay
 const int relay_2 = 26;// el numero de pin del esp32 conectado relay
@@ -21,21 +21,23 @@ void setEstadoSensorPirActual(int estado) {
   pirEstadoActual = estado;
 }
 void setPinPirModo() {
-  pinMode(pinConexion, INPUT); // setea el pin del  ESP32 en modo entrada para leer los datos del sensor pir
+  pinMode(pirConexion, INPUT); // setea el pin del  ESP32 en modo entrada para leer los datos del sensor pir
 }
 
 void leerEstadoSensorPir() {
 
+ 
+
   pirEstadoPrevio = pirEstadoActual; //guarda el estado anterior que se encontraba el sensor
-  setEstadoSensorPirActual( digitalRead(pinConexion));   // lee el estado actual del sensor
+  setEstadoSensorPirActual( digitalRead(pirConexion));   // lee el estado actual del sensor
 
   if (pirEstadoPrevio == LOW && pirEstadoActual == HIGH) {   // el estado pasa de LOW -> HIGH ---DETECTA MOVIMIENTO
 
-    delay(50); digitalWrite(LED, LOW); /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
+    delay(50); digitalWrite(LED, HIGH); /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     // ENCENDER RELAY - HACER UN TIMER
   }
   else if (pirEstadoPrevio == HIGH && pirEstadoActual == LOW) {
-    digitalWrite(LED, HIGH);
+    digitalWrite(LED, LOW);
     // APAGAR LUCES SI SE CUMPLE TAMBIEN LA CANDICION DEL TIMER
   }
 
@@ -107,6 +109,7 @@ void conexionWifi(){
   }
 void setup() {
   Serial.begin(115200);
+  delay(300); // es para que el sensor PIR se estabilice con el ambiente
   setPinPirModo();
   setPinRelayrModo();
   pinMode(LED, OUTPUT); /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
