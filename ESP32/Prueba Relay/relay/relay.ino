@@ -1,11 +1,4 @@
-/*********
-  Rui Santos
-  Complete project details at https://RandomNerdTutorials.com/esp32-relay-module-ac-web-server/
-  
-  The above copyright notice and this permission notice shall be included in all
-  copies or substantial portions of the Software.
-*********/
-const int relay_0 =14 ;
+const int relay_0 = 14;
 const int relay_1 = 27;
 const int relay_2 = 26;
 const int relay_3 = 25;
@@ -19,22 +12,21 @@ void setup() {
   pinMode(relay_1, OUTPUT);
   pinMode(relay_2, OUTPUT);
   pinMode(relay_3, OUTPUT);
-pinMode(relay_4, OUTPUT);
-pinMode(relay_5, OUTPUT);
-pinMode(relay_6, OUTPUT);
-pinMode(relay_7, OUTPUT);
- 
+  pinMode(relay_4, OUTPUT);
+  pinMode(relay_5, OUTPUT);
+  pinMode(relay_6, OUTPUT);
+  pinMode(relay_7, OUTPUT);
 }
 
 void loop() {
-  digitalWrite(relay_0, HIGH);
+  digitalWrite(relay_0, LOW);
   digitalWrite(relay_1, HIGH);
   digitalWrite(relay_2, HIGH);
   digitalWrite(relay_3, HIGH);
   digitalWrite(relay_4, HIGH);
   digitalWrite(relay_5, HIGH);
   digitalWrite(relay_6, HIGH);
- digitalWrite(relay_7, HIGH);
+  digitalWrite(relay_7, HIGH);
   delay(5000);
   digitalWrite(relay_0, LOW);
   digitalWrite(relay_1, LOW);
@@ -43,6 +35,6 @@ void loop() {
   digitalWrite(relay_4, LOW);
   digitalWrite(relay_5, LOW);
   digitalWrite(relay_6, LOW);
- digitalWrite(relay_7, LOW);
+  digitalWrite(relay_7, LOW);
   delay(5000);
 }
