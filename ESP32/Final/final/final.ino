@@ -1,6 +1,7 @@
 #define LED 2  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
 #include <WiFi.h>
 #include <WiFiMulti.h>
+#include <millisDelay.h>
 WiFiMulti wifiMulti;
 
 const uint32_t TiempoEsperaWifi = 5000;
@@ -16,6 +17,7 @@ const int relay_7 = 17;      // el numero de pin del esp32 conectado relay
 
 int pirEstadoActual = LOW;  // estado actual del pin
 int pirEstadoPrevio = LOW;  // estado anterior del pin
+millisDelay pirDelay;       // defino la variable de tiempo para el sensor pir
 
 void setPinRelayrModo() {  // setea los pines del  ESP32 en modo salida para accionar los relay
   pinMode(relay_0, OUTPUT);
@@ -105,15 +107,15 @@ void leerEstadoSensorPir() {
 
   if (pirEstadoPrevio == LOW && pirEstadoActual == HIGH) {  // el estado pasa de LOW -> HIGH ---DETECTA MOVIMIENTO
 
-    delay(50);
+    pirDelay.start(20000);// asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario VER COMO PASARLO COMO PARAMETRO DESDE LA APLICACION
     digitalWrite(LED, HIGH);  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
-    // ENCENDER RELAY - HACER UN TIMER
-    setOnRelay_1();
+    Serial.println("MoVIMIENTO DETECTADO!");//BORRAR
+    setOnRelay_1();// ENCIENDO EL RELAY 1
 
-  } else if (pirEstadoPrevio == HIGH && pirEstadoActual == LOW) {
-    digitalWrite(LED, LOW);
-    // APAGAR LUCES SI SE CUMPLE TAMBIEN LA CANDICION DEL TIMER
-    setOFFRelay_1();
+  } else if (pirDelay.justFinished()) {
+    digitalWrite(LED, LOW);//BORRAR SOLO DE PRUEBA
+    Serial.println("MOVIMIENTO NO DETECTADO");
+    setOFFRelay_1();// APAGO EL RELAY 1
   }
 }
 
@@ -121,7 +123,7 @@ void conexionWifi() {
   Serial.println("\nIniciando multi Wifi");
 
   wifiMulti.addAP("ARGENFARMA-CAMARA", "juansalierno2016");
-  wifiMulti.addAP("ssid_2", "contrasenna_2");
+  wifiMulti.addAP("JUANIBIANCA", "00429191276");// VER COMO PASAR COMO PARAMETRO DESDE LA APLICACION
   wifiMulti.addAP("ssid_3", "contrasenna_3");
 
   WiFi.mode(WIFI_STA);
@@ -159,11 +161,12 @@ void setup() {
   setPinRelayrModo();
   conexionWifi();
   pinMode(LED, OUTPUT);  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
+  setOffAllRelay();
 }
 
 void loop() {
   getEstadoConexionWifi();
-  setOffAllRelay();
+
   setOnRelay_5();
   leerEstadoSensorPir();
 }

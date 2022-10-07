@@ -1,35 +1,50 @@
-
+#include <millisDelay.h>
 
 #define LED 2
 const int PIN_TO_SENSOR =19; 
 int pinStateCurrent   = LOW;  
-int pinStatePrevious  = LOW;  
+int pinStatePrevious  = LOW; 
+unsigned long currentTime ; 
+millisDelay pirDelay; 
+const int relay_0 = 14;
 
 void setup() {
   Serial.begin(115200);            
   pinMode(LED,OUTPUT);
   pinMode(PIN_TO_SENSOR, INPUT); 
+ // pinMode(relay_0, OUTPUT);
 }
 
-void loop() {
-   
-  pinStatePrevious = pinStateCurrent; 
+
+void detectarMovimiento(){
+
+pinStatePrevious = pinStateCurrent; 
   pinStateCurrent = digitalRead(PIN_TO_SENSOR);   
-  Serial.println(pinStateCurrent);
-    Serial.println(pinStatePrevious);
+ // Serial.println(pinStateCurrent);
+ //   Serial.println(pinStatePrevious);
     
   if (pinStatePrevious == LOW && pinStateCurrent == HIGH) {   
-    
+   pirDelay.start(20000);
     Serial.println("Motion detected!");
-     delay(30);
+    
     digitalWrite(LED,HIGH);
    
   }
   else
-  if (pinStatePrevious == HIGH && pinStateCurrent == LOW) {   
+  if (/*pinStatePrevious == HIGH && pinStateCurrent == LOW &&*/ pirDelay.justFinished()) {   
     Serial.println("Motion stopped!");
-    delay(50);
+  
      digitalWrite(LED,LOW);
     
   }
+
 }
+void loop() {
+  
+   detectarMovimiento();
+  
+  
+}
+
+
+

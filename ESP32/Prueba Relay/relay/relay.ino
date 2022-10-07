@@ -19,7 +19,7 @@ void setup() {
 }
 
 void loop() {
-  digitalWrite(relay_0, LOW);
+  digitalWrite(relay_0, HIGH);
   digitalWrite(relay_1, HIGH);
   digitalWrite(relay_2, HIGH);
   digitalWrite(relay_3, HIGH);
