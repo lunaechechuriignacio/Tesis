@@ -1,10 +1,12 @@
 #include <WiFi.h>
 #include <FirebaseESP32.h>
-//1. Change the following info
+
 #define WIFI_SSID "JUANIBIANCA"
 #define WIFI_PASSWORD "00429191276"
+
 #define FIREBASE_HOST "prueba-conexion-4396c-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "AIzaSyBVdr6FlCRrh2rhpBn698VxtJJwrIF1b1s"
+
 FirebaseData fbdo;
 const int relay1 = 14;
 void conexionFirebase() {
