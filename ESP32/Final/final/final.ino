@@ -2,92 +2,49 @@
 #include <WiFi.h>
 #include <WiFiMulti.h>
 #include <millisDelay.h>
+#include <FirebaseESP32.h>
+
+#define FIREBASE_HOST "prueba-conexion-4396c-default-rtdb.firebaseio.com"
+#define FIREBASE_AUTH "AIzaSyBVdr6FlCRrh2rhpBn698VxtJJwrIF1b1s"
+
 WiFiMulti wifiMulti;
+FirebaseData fbdo;
 
 const uint32_t TiempoEsperaWifi = 5000;
 const int pirConexion = 19;  // el numero de pin del esp32 conectado al sensor Pir
-const int relay_0 = 14;      // el numero de pin del esp32 conectado relay
-const int relay_1 = 27;      // el numero de pin del esp32 conectado relay
-const int relay_2 = 26;      // el numero de pin del esp32 conectado relay
-const int relay_3 = 25;      // el numero de pin del esp32 conectado relay
-const int relay_4 = 33;      // el numero de pin del esp32 conectado relay
-const int relay_5 = 32;      // el numero de pin del esp32 conectado relay
-const int relay_6 = 16;      // el numero de pin del esp32 conectado relay
-const int relay_7 = 17;      // el numero de pin del esp32 conectado relay
+const int relay1 = 14;       // el numero de pin del esp32 conectado relay
+const int relay2 = 27;       // el numero de pin del esp32 conectado relay
+const int relay3 = 26;       // el numero de pin del esp32 conectado relay
+const int relay4 = 25;       // el numero de pin del esp32 conectado relay
+const int relay5 = 33;       // el numero de pin del esp32 conectado relay
+const int relay6 = 32;       // el numero de pin del esp32 conectado relay
+const int relay7 = 16;       // el numero de pin del esp32 conectado relay
+const int relay8 = 17;       // el numero de pin del esp32 conectado relay
 
 int pirEstadoActual = LOW;  // estado actual del pin
 int pirEstadoPrevio = LOW;  // estado anterior del pin
 millisDelay pirDelay;       // defino la variable de tiempo para el sensor pir
 
 void setPinRelayrModo() {  // setea los pines del  ESP32 en modo salida para accionar los relay
-  pinMode(relay_0, OUTPUT);
-  pinMode(relay_1, OUTPUT);
-  pinMode(relay_2, OUTPUT);
-  pinMode(relay_3, OUTPUT);
-  pinMode(relay_4, OUTPUT);
-  pinMode(relay_5, OUTPUT);
-  pinMode(relay_6, OUTPUT);
-  pinMode(relay_7, OUTPUT);
+  pinMode(relay1, OUTPUT);
+  pinMode(relay2, OUTPUT);
+  pinMode(relay3, OUTPUT);
+  pinMode(relay4, OUTPUT);
+  pinMode(relay5, OUTPUT);
+  pinMode(relay6, OUTPUT);
+  pinMode(relay7, OUTPUT);
+  pinMode(relay8, OUTPUT);
 }
-
-void setOnRelay_1() {
-  digitalWrite(relay_0, LOW);
-}
-void setOnRelay_2() {
-  digitalWrite(relay_1, LOW);
-}
-void setOnRelay_3() {
-  digitalWrite(relay_2, LOW);
-}
-void setOnRelay_4() {
-  digitalWrite(relay_3, LOW);
-}
-void setOnRelay_5() {
-  digitalWrite(relay_4, LOW);
-}
-void setOnRelay_6() {
-  digitalWrite(relay_5, LOW);
-}
-void setOnRelay_7() {
-  digitalWrite(relay_6, LOW);
-}
-void setOnRelay_8() {
-  digitalWrite(relay_7, LOW);
-}
-void setOFFRelay_1() {
-  digitalWrite(relay_0, HIGH);
-}
-void setOFFRelay_2() {
-  digitalWrite(relay_1, HIGH);
-}
-void setOFFRelay_3() {
-  digitalWrite(relay_2, HIGH);
-}
-void setOFFRelay_4() {
-  digitalWrite(relay_3, HIGH);
-}
-void setOFFRelay_5() {
-  digitalWrite(relay_4, HIGH);
-}
-void setOFFRelay_6() {
-  digitalWrite(relay_5, HIGH);
-}
-void setOFFRelay_7() {
-  digitalWrite(relay_6, HIGH);
-}
-void setOFFRelay_8() {
-  digitalWrite(relay_7, HIGH);
-}
-
 void setOffAllRelay() {
-  setOFFRelay_1();
-  setOFFRelay_2();
-  setOFFRelay_3();
-  setOFFRelay_4();
-  setOFFRelay_5();
-  setOFFRelay_6();
-  setOFFRelay_7();
-  setOFFRelay_8();
+
+  digitalWrite(relay1, 0);
+  digitalWrite(relay2, 0);
+  digitalWrite(relay3, 0);
+  digitalWrite(relay4, 0);
+  digitalWrite(relay5, 0);
+  digitalWrite(relay6, 0);
+  digitalWrite(relay7, 0);
+  digitalWrite(relay8, 0);
 }
 
 int getEstadoSensorPirActual() {
@@ -107,23 +64,27 @@ void leerEstadoSensorPir() {
 
   if (pirEstadoPrevio == LOW && pirEstadoActual == HIGH) {  // el estado pasa de LOW -> HIGH ---DETECTA MOVIMIENTO
 
-    pirDelay.start(20000);// asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario VER COMO PASARLO COMO PARAMETRO DESDE LA APLICACION
-    digitalWrite(LED, HIGH);  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
-    Serial.println("MoVIMIENTO DETECTADO!");//BORRAR
-    setOnRelay_1();// ENCIENDO EL RELAY 1
+    pirDelay.start(20000);                    // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario VER COMO PASARLO COMO PARAMETRO DESDE LA APLICACION
+    digitalWrite(LED, HIGH);                  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
+    Serial.println("MoVIMIENTO DETECTADO!");  //BORRAR
+    digitalWrite(relay1, 0);                         // ENCIENDO EL RELAY 1
 
   } else if (pirDelay.justFinished()) {
-    digitalWrite(LED, LOW);//BORRAR SOLO DE PRUEBA
+    digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
     Serial.println("MOVIMIENTO NO DETECTADO");
-    setOFFRelay_1();// APAGO EL RELAY 1
+    digitalWrite(relay1, 1);  // APAGO EL RELAY 1
   }
 }
 
+void conexionFirebase() {
+  Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
+  Firebase.reconnectWiFi(true);
+}
 void conexionWifi() {
   Serial.println("\nIniciando multi Wifi");
 
   wifiMulti.addAP("ARGENFARMA-CAMARA", "juansalierno2016");
-  wifiMulti.addAP("JUANIBIANCA", "00429191276");// VER COMO PASAR COMO PARAMETRO DESDE LA APLICACION
+  wifiMulti.addAP("JUANIBIANCA", "00429191276");  // VER COMO PASAR COMO PARAMETRO DESDE LA APLICACION
   wifiMulti.addAP("ssid_3", "contrasenna_3");
 
   WiFi.mode(WIFI_STA);
@@ -154,6 +115,96 @@ void getEstadoConexionWifi() {
   delay(1000);
 }
 
+void getEstadoRele_1() {
+
+  if (Firebase.getString(fbdo, "/relay1")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay1, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+
+void getEstadoRele_2() {
+
+  if (Firebase.getString(fbdo, "/relay2")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay2, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+void getEstadoRele_3() {
+
+  if (Firebase.getString(fbdo, "/relay3")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay3, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+void getEstadoRele_4() {
+
+  if (Firebase.getString(fbdo, "/relay4")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay4, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+void getEstadoRele_5() {
+
+  if (Firebase.getString(fbdo, "/relay5")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay5, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+void getEstadoRele_6() {
+
+  if (Firebase.getString(fbdo, "/relay6")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay6, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+void getEstadoRele_7() {
+
+  if (Firebase.getString(fbdo, "/relay7")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay7, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+
+void getEstadoRele_8() {
+
+  if (Firebase.getString(fbdo, "/relay8")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    digitalWrite(relay8, fbdo.stringData().toInt());
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
 void setup() {
   Serial.begin(115200);
   delay(300);  // es para que el sensor PIR se estabilice con el ambiente
@@ -162,11 +213,21 @@ void setup() {
   conexionWifi();
   pinMode(LED, OUTPUT);  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
   setOffAllRelay();
+  conexionFirebase();
 }
 
 void loop() {
   getEstadoConexionWifi();
+  getEstadoRele_1();
+  getEstadoRele_2();
+  getEstadoRele_3();
+  getEstadoRele_4();
+  getEstadoRele_5();
+  getEstadoRele_6();
+  getEstadoRele_5();
+  getEstadoRele_6();
+  getEstadoRele_7();
+  getEstadoRele_8();
 
-  setOnRelay_5();
-  leerEstadoSensorPir();
+  //leerEstadoSensorPir();
 }
