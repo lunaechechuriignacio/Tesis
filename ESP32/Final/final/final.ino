@@ -20,10 +20,12 @@ const int relay5 = 33;       // el numero de pin del esp32 conectado relay
 const int relay6 = 32;       // el numero de pin del esp32 conectado relay
 const int relay7 = 16;       // el numero de pin del esp32 conectado relay
 const int relay8 = 17;       // el numero de pin del esp32 conectado relay
+String estadoRele1 = "1";
 
 int pirEstadoActual = LOW;  // estado actual del pin
 int pirEstadoPrevio = LOW;  // estado anterior del pin
-millisDelay pirDelay;       // defino la variable de tiempo para el sensor pir
+int pirAutomatico = 0;
+millisDelay pirDelay;  // defino la variable de tiempo para el sensor pir
 
 void setPinRelayrModo() {  // setea los pines del  ESP32 en modo salida para accionar los relay
   pinMode(relay1, OUTPUT);
@@ -67,12 +69,14 @@ void leerEstadoSensorPir() {
     pirDelay.start(20000);                    // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario VER COMO PASARLO COMO PARAMETRO DESDE LA APLICACION
     digitalWrite(LED, HIGH);                  /// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     Serial.println("MoVIMIENTO DETECTADO!");  //BORRAR
-    digitalWrite(relay1, 0);                         // ENCIENDO EL RELAY 1
+    digitalWrite(relay1, 0);                  // ENCIENDO EL RELAY 1
+    estadoRele1 = "0";
 
   } else if (pirDelay.justFinished()) {
     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
     Serial.println("MOVIMIENTO NO DETECTADO");
     digitalWrite(relay1, 1);  // APAGO EL RELAY 1
+    estadoRele1 = "1";
   }
 }
 
@@ -115,6 +119,18 @@ void getEstadoConexionWifi() {
   delay(1000);
 }
 
+
+void getEstadoPirAutomatico() {
+
+  if (Firebase.getString(fbdo, "/pirAutomatico")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.stringData());
+    pirAutomatico = fbdo.stringData().toInt();
+  } else {
+    Serial.print("Error in getString, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
 void getEstadoRele_1() {
 
   if (Firebase.getString(fbdo, "/relay1")) {
@@ -218,7 +234,7 @@ void setup() {
 
 void loop() {
   getEstadoConexionWifi();
-  getEstadoRele_1();
+
   getEstadoRele_2();
   getEstadoRele_3();
   getEstadoRele_4();
@@ -229,5 +245,10 @@ void loop() {
   getEstadoRele_7();
   getEstadoRele_8();
 
-  //leerEstadoSensorPir();
+  getEstadoPirAutomatico();
+  if (pirAutomatico == 0) {
+    leerEstadoSensorPir();
+    Firebase.setString(fbdo, "/relay1", estadoRele1);
+  } else
+    getEstadoRele_1();
 }
