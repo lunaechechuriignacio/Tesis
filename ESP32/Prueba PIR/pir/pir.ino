@@ -15,36 +15,23 @@ void setup() {
  // pinMode(relay_0, OUTPUT);
 }
 
-
-void detectarMovimiento(){
-
-pinStatePrevious = pinStateCurrent; 
+void detectarMovimiento() {
+  pinStatePrevious = pinStateCurrent; 
   pinStateCurrent = digitalRead(PIN_TO_SENSOR);   
- // Serial.println(pinStateCurrent);
- //   Serial.println(pinStatePrevious);
+  // Serial.println(pinStateCurrent);
+  // Serial.println(pinStatePrevious);
     
   if (pinStatePrevious == LOW && pinStateCurrent == HIGH) {   
-   pirDelay.start(20000);
+    pirDelay.start(20000);
     Serial.println("Motion detected!");
     
     digitalWrite(LED,HIGH);
-   
-  }
-  else
-  if (/*pinStatePrevious == HIGH && pinStateCurrent == LOW &&*/ pirDelay.justFinished()) {   
+  } else if (/*pinStatePrevious == HIGH && pinStateCurrent == LOW &&*/ pirDelay.justFinished()) {   
     Serial.println("Motion stopped!");
-  
-     digitalWrite(LED,LOW);
-    
+    digitalWrite(LED,LOW);
   }
-
 }
+
 void loop() {
-  
    detectarMovimiento();
-  
-  
 }
-
-
-
