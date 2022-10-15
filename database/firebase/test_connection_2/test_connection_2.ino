@@ -7,7 +7,7 @@
 
 // Credenciales Proyecto Firebase
 #define FIREBASE_HOST "https://prueba-conexion-4396c-default-rtdb.firebaseio.com"
-#define FIREBASE_AUTH "omVcN33FXeEVJ0w2NvGYaVhuS9SOY0fSkytJTtg7" // authorization, key, token
+#define FIREBASE_AUTH "omVcN33FXeEVJ0w2NvGYaVhuS9SOY0fSkytJTtg7"  // authorization, key, token
 
 // Firebase Data object
 FirebaseData firebase_data;
@@ -23,11 +23,12 @@ void setup() {
   Serial.print("Conectado al WiFi");
   Serial.println();
 
-  while(WiFi.status() != WL_CONNECTED)
-  {
+  while (WiFi.status() != WL_CONNECTED) {
     Serial.print(".");
     delay(300);
   }
+  Serial.println();
+  Serial.println(WiFi.localIP());
   Serial.println();
 
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
@@ -35,8 +36,7 @@ void setup() {
 }
 
 void loop() {
-  while(iterate)
-  {
+  while (iterate) {
     // leer datos:
 
     // integer
