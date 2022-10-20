@@ -58,7 +58,8 @@ void readStatusPirSensor() {
   currentStatusPirSensor = digitalRead(pir_sensor);  // lee el estado actual del sensor
 
   if (previousStatusPirSensor == LOW && currentStatusPirSensor == HIGH) {  // el estado pasa de LOW -> HIGH ---DETECTA MOVIMIENTO
-    pirSensorDelay.start(20000);                                           // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario VER COMO PASARLO COMO PARAMETRO DESDE LA APLICACION
+    Firebase.getInt(fbdo, "/pir_sensor/time_seconds");
+    pirSensorDelay.start(fbdo.intData()*1000);  // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario se pasa COMO PARAMETRO DESDE LA APLICACION
     digitalWrite(LED, HIGH);                                               // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     Serial.println("MOVIMIENTO DETECTADO!");                               // BORRAR
     digitalWrite(relay_1, 0);                                              // ENCIENDO EL RELAY 1
@@ -197,7 +198,7 @@ void loop() {
   getStatusRelay(6);
   getStatusRelay(7);
   getStatusRelay(8);
-
+ 
   updatePirSensorAutomatic();
   if (pirSensorAutomatic == 0) {
     readStatusPirSensor();
