@@ -2,7 +2,9 @@
 #include <WiFiMulti.h>
 #include <millisDelay.h>
 #include <FirebaseESP32.h>
-#include <relay.h>
+#include <Relay.h>
+#include <Wire.h>
+#include "RTClib.h"
 #define LED 2  // esto prueba que esta funcionando el sensor. Enciende el led de la placa esp32 BORRAR
 #define FIREBASE_HOST "test-bdd-5f5f7-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "HKXQvDUpyBepZpCVXQ0XRTqFsh9gmULP4cpRWU1n"
@@ -13,20 +15,23 @@ FirebaseData fbdo;
 const uint32_t waitTimeWifi = 5000;
 const int pir_sensor = 19;
 
-relay relay_1;
-relay relay_2;
-relay relay_3;
-relay relay_4;
-relay relay_5;
-relay relay_6;
-relay relay_7;
-relay relay_8;
+Relay relay_1;
+Relay relay_2;
+Relay relay_3;
+Relay relay_4;
+Relay relay_5;
+Relay relay_6;
+Relay relay_7;
+Relay relay_8;
 int statusRelay1 = 1;
 
 int currentStatusPirSensor = LOW;   // estado actual del pin
 int previousStatusPirSensor = LOW;  // estado anterior del pin
 int pirSensorAutomatic = 0;
 millisDelay pirSensorDelay;  // defino la variable de tiempo para el sensor pir
+
+RTC_DS3231 rtc;
+char daysOfTheWeek[7][12] = {"DOMINGO", "LUNES", "MARTES", "MIERCOLES", "JUEVES", "VIERNES", "SABADO"};
 
 void setPinRelay() {
   relay_1.setPort(14);
@@ -90,14 +95,15 @@ void readStatusPirSensor() {
     pirSensorDelay.start(fbdo.intData() * 1000);  // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario se pasa COMO PARAMETRO DESDE LA APLICACION
     digitalWrite(LED, HIGH);                      // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
-    digitalWrite(relay_1.getPort(), 0);           // ENCIENDO EL RELAY 1
+   // digitalWrite(relay_1.getPort(), 0);           // ENCIENDO EL RELAY 1
     relay_1.setStatus(0);
   } else if (pirSensorDelay.justFinished()) {
     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
     Serial.println("MOVIMIENTO NO DETECTADO");
-    digitalWrite(relay_1.getPort(), 1);  // APAGO EL RELAY 1
+   // digitalWrite(relay_1.getPort(), 1);  // APAGO EL RELAY 1
     relay_1.setStatus(1);
   }
+  digitalWrite(relay_1.getPort(), relay_1.getStatus());
 }
 
 void connectWifi() {
@@ -157,9 +163,9 @@ void updatePirSensorAutomatic() {
   }
 }
 
-void getStatusRelay(relay relay) {
-  Serial.println("/relays/relay_" + (String)(relay.getNumber())+"/status");
-  if (Firebase.getInt(fbdo, "/relays/relay_" + (String)(relay.getNumber())+"/status")) {
+void getStatusRelay(Relay relay) {
+
+  if (Firebase.getInt(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/status")) {
     Serial.print("Get int data A success, str = ");
     Serial.println(fbdo.intData());
     digitalWrite(relay.getPort(), fbdo.intData());  //////////////////////////////////////
@@ -168,37 +174,100 @@ void getStatusRelay(relay relay) {
     Serial.println(fbdo.errorReason());
   }
 }
+void getTimeRelay(Relay relay) {
 
+  if (Firebase.getString(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/start_time")) {
+    Serial.print("Get int data A success, str = ");
+      Serial.println(fbdo.stringData());
+    relay.setStartTime(fbdo.stringData());
+  } else {
+    Serial.print("Error in getInt, ");
+    Serial.println(fbdo.errorReason());
+  }
+  if (Firebase.getString(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/end_time")) {
+    Serial.print("Get int data A success, str = ");
+     Serial.println(fbdo.stringData());
+    relay.setEndTime(fbdo.stringData());
+  } else {
+    Serial.print("Error in getInt, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+void getUpdateRelay(Relay relay) {
+    getStatusRelay(relay);
+    getTimeRelay(relay);
+} 
+
+void initRtc() {
+  if (! rtc.begin()) {
+    Serial.println("no se puede encontrar el  RTC");
+    while (1);
+  }
+  if (rtc.lostPower()) {
+    Serial.println("RTC perdio la energia,  se seteara el tiempo ahora");
+    rtc.adjust(DateTime(F(__DATE__), F(__TIME__))); //Si el RTC  perdido energía, establecerá en el RTC en la fecha y hora cuando se compiló este línea
+  }
+}
 void setup() {
   Serial.begin(115200);
   delay(300);  // es para que el sensor PIR se estabilice con el ambiente
   setupRelay();
-     setModePirSensor();
-    setModeAllRelays(); 
+  setModePirSensor();
+  setModeAllRelays();
 
-    pinMode(LED, OUTPUT);  // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
-    setOffAllRelays();
+  pinMode(LED, OUTPUT);  // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
+  setOffAllRelays();
 
-    connectWifi();
-    connectFirebase();
+  connectWifi();
+  connectFirebase();
+  initRtc() ;
 }
 
 void loop() {
   verifyConnectionWifi();
-  
-  getStatusRelay(relay_2);
-  getStatusRelay(relay_3);
-  getStatusRelay(relay_4);
-  getStatusRelay(relay_5);
-  getStatusRelay(relay_6);
-  getStatusRelay(relay_7);
-  getStatusRelay(relay_8);
+
+  getUpdateRelay(relay_2);
+  getUpdateRelay(relay_3);
+  getUpdateRelay(relay_4);
+  getUpdateRelay(relay_5);
+  getUpdateRelay(relay_6);
+  getUpdateRelay(relay_7);
+  getUpdateRelay(relay_8);
 
   updatePirSensorAutomatic();
   if (pirSensorAutomatic == 0) {
     readStatusPirSensor();
     Firebase.setInt(fbdo, "/relays/relay_1/status", relay_1.getStatus());
   } else {
-    getStatusRelay(relay_1);
+    getUpdateRelay(relay_1);
   }
+
+////////////////////////////////////solo de prueba BORRRAR////////////////////
+
+
+ DateTime now = rtc.now();
+
+  Serial.print(now.year(), DEC);
+  Serial.print('/');
+  Serial.print(now.month(), DEC);
+  Serial.print('/');
+  Serial.print(now.day(), DEC);
+  Serial.print(" (");
+  Serial.print(daysOfTheWeek[now.dayOfTheWeek()]);
+  Serial.print(") ");
+  Serial.print(now.hour(), DEC);
+  Serial.print(':');
+  Serial.print(now.minute(), DEC);
+  Serial.print(':');
+  Serial.print(now.second(), DEC);
+  Serial.println();
+
+
+  Serial.print("Temperature: ");
+  Serial.print(rtc.getTemperature());
+  Serial.println(" C");
+
+  Serial.println();
+////////////////////////////////////solo de prueba BORRRAR////////////////////
+  
 }

@@ -1,11 +1,11 @@
-#ifndef relay_h
-#define relay_h
+#ifndef Relay_h
+#define Relay_h
 
 #include "Arduino.h"
 
-class relay {
+class Relay {
   public:
-      relay();
+         Relay();
          int getPort();
          void setPort(int port);
          
@@ -18,11 +18,11 @@ class relay {
          int getTime();
          void setTime(int time);
          
-         String getTimeStart ();
-         void setTimeStart (String time);
+         String getStartTime ();
+         void setStartTime (String time);
          
-         String getTimeFinish ();
-         void setTimeFinish (String time);
+         String getEndTime ();
+         void setEndTime (String time);
 
          bool getAutomatic ();
          void setAutomatic (bool automatic);
@@ -36,8 +36,7 @@ class relay {
            int time;
            String time_start;
            String time_finish;
-           bool automatic; 
-        
+           bool automatic;        
      
 };
 #endif

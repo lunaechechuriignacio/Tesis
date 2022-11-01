@@ -1,7 +1,7 @@
 
-#include <relay.h>
+#include <Relay.h>
 
-relay::relay() {
+Relay::Relay() {
     port=0;
     number=0;
     status=0;
@@ -11,50 +11,50 @@ relay::relay() {
     automatic= false;    
 }
 
-int relay::getPort(){
+int Relay::getPort(){
     return port;
 }
 
-void relay::setPort(int newPort){
+void Relay::setPort(int newPort){
     port=newPort;
 }
 
-int relay::getNumber(){
+int Relay::getNumber(){
     return number;
 }
 
-void relay::setNumber(int newNumber){
+void Relay::setNumber(int newNumber){
      number=newNumber;
 }
 
-int relay::getStatus(){
+int Relay::getStatus(){
     return status;
 }
 
-void relay::setStatus(int newStatus){
+void Relay::setStatus(int newStatus){
      status=newStatus;
 }
 
-String relay::getTimeStart (){
+String Relay::getStartTime (){
         return time_start;
 }
-void relay::setTimeStart (String time){
+void Relay::setStartTime (String time){
      time_start=time;
 }
          
-String relay::getTimeFinish (){
+String Relay::getEndTime (){
      return time_finish;
      }
      
-void relay::setTimeFinish (String time){
+void Relay::setEndTime (String time){
      time_finish=time;
 }
 
-bool relay::getAutomatic(){
+bool Relay::getAutomatic(){
      return automatic;
 }
 
-void relay::setAutomatic(bool newAutomatic){
+void Relay::setAutomatic(bool newAutomatic){
      automatic=newAutomatic;
 }    
 
