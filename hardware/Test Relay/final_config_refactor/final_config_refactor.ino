@@ -95,12 +95,12 @@ void readStatusPirSensor() {
     pirSensorDelay.start(fbdo.intData() * 1000);  // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario se pasa COMO PARAMETRO DESDE LA APLICACION
     digitalWrite(LED, HIGH);                      // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
-   // digitalWrite(relay_1.getPort(), 0);           // ENCIENDO EL RELAY 1
+    // digitalWrite(relay_1.getPort(), 0);           // ENCIENDO EL RELAY 1
     relay_1.setStatus(0);
   } else if (pirSensorDelay.justFinished()) {
     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
     Serial.println("MOVIMIENTO NO DETECTADO");
-   // digitalWrite(relay_1.getPort(), 1);  // APAGO EL RELAY 1
+    // digitalWrite(relay_1.getPort(), 1);  // APAGO EL RELAY 1
     relay_1.setStatus(1);
   }
   digitalWrite(relay_1.getPort(), relay_1.getStatus());
@@ -174,11 +174,12 @@ void getStatusRelay(Relay relay) {
     Serial.println(fbdo.errorReason());
   }
 }
+
 void getTimeRelay(Relay relay) {
 
   if (Firebase.getString(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/start_time")) {
     Serial.print("Get int data A success, str = ");
-      Serial.println(fbdo.stringData());
+    Serial.println(fbdo.stringData());
     relay.setStartTime(fbdo.stringData());
   } else {
     Serial.print("Error in getInt, ");
@@ -186,17 +187,30 @@ void getTimeRelay(Relay relay) {
   }
   if (Firebase.getString(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/end_time")) {
     Serial.print("Get int data A success, str = ");
-     Serial.println(fbdo.stringData());
+    Serial.println(fbdo.stringData());
     relay.setEndTime(fbdo.stringData());
   } else {
     Serial.print("Error in getInt, ");
     Serial.println(fbdo.errorReason());
   }
 }
+void getAutomaticRelay(Relay relay) {
+
+  if (Firebase.getBool(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/automatic")) {
+    Serial.print("Get int data A success, str = ");
+    Serial.println(fbdo.boolData());
+    relay.setAutomatic( fbdo.boolData());  //////////////////////////////////////
+  } else {
+    Serial.print("Error in getInt, ");
+    Serial.println(fbdo.errorReason());
+  }
+}
+
 void getUpdateRelay(Relay relay) {
-    getStatusRelay(relay);
-    getTimeRelay(relay);
-} 
+  getStatusRelay(relay);
+  getTimeRelay(relay);
+  getAutomaticRelay(relay);
+}
 
 void initRtc() {
   if (! rtc.begin()) {
@@ -242,10 +256,10 @@ void loop() {
     getUpdateRelay(relay_1);
   }
 
-////////////////////////////////////solo de prueba BORRRAR////////////////////
+  ////////////////////////////////////solo de prueba BORRRAR////////////////////
 
 
- DateTime now = rtc.now();
+  DateTime now = rtc.now();
 
   Serial.print(now.year(), DEC);
   Serial.print('/');
@@ -268,6 +282,6 @@ void loop() {
   Serial.println(" C");
 
   Serial.println();
-////////////////////////////////////solo de prueba BORRRAR////////////////////
-  
+  ////////////////////////////////////solo de prueba BORRRAR////////////////////
+
 }
