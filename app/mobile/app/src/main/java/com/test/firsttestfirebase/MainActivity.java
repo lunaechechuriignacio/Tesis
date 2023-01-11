@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         final DatabaseReference reference= database.getReference(path).child(pathTestString);
         reference.addValueEventListener(new ValueEventListener() {
-            @Override
+             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 tv.setText(snapshot.getValue(String.class));
             }
