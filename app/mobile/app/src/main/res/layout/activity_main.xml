@@ -32,22 +32,103 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/switchOn_Off"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="164dp"
-        android:layout_marginTop="93dp"
-        android:layout_marginEnd="159dp"
-        android:layout_marginBottom="200dp"
+        android:id="@+id/switchOn_OffRelay_1"
+        android:layout_width="97dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="69dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="646dp"
         android:checked="false"
         android:onClick="presionaBoton"
         android:text="On-Off"
-        app:layout_constraintBottom_toTopOf="@+id/dataInt"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/button"
+        app:layout_constraintTop_toBottomOf="@+id/switchAutomaticoRelay_1"
         tools:ignore="UseSwitchCompatOrMaterialXml" />
+
+    <EditText
+        android:id="@+id/editTextTimeswitchAutomaticoRelay_1"
+        android:layout_width="140dp"
+        android:layout_height="41dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="665dp"
+        android:ems="10"
+        android:inputType="number"
+        android:text="0"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Switch
+        android:id="@+id/switchAutomaticoRelay_1"
+        android:layout_width="123dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="116dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="5dp"
+        android:text="Automatico"
+        app:layout_constraintBottom_toTopOf="@+id/switchOn_OffRelay_1"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/editTextTimeswitchAutomaticoRelay_1"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints,UseSwitchCompatOrMaterialXml" />
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="409dp"
+        android:layout_height="wrap_content"
+        tools:layout_editor_absoluteX="11dp"
+        tools:layout_editor_absoluteY="108dp" />
+
+    <TextView
+        android:id="@+id/textView2Relay_1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="266dp"
+        android:layout_marginBottom="646dp"
+        android:text="TIEMPO EN MINUTOS"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextTimeswitchAutomaticoRelay_1"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <Button
+        android:id="@+id/buttonRelay_1"
+        android:layout_width="78dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="45dp"
+        android:layout_marginBottom="254dp"
+        android:text="Aceptar"
+        android:textColor="@color/design_default_color_background"
+        android:textSize="8sp"
+        app:layout_constraintBottom_toTopOf="@+id/dataInt"
+        app:layout_constraintEnd_toStartOf="@+id/switchAutomaticoRelay_1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/editTextTimeswitchAutomaticoRelay_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.55" />
+
+    <Button
+        android:id="@+id/buttonEncendidoRelay_1"
+        android:layout_width="80dp"
+        android:layout_height="37dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="50dp"
+        android:layout_marginBottom="224dp"
+        android:clickable="false"
+        app:layout_constraintBottom_toTopOf="@+id/dataInt"
+        app:layout_constraintEnd_toStartOf="@+id/switchOn_OffRelay_1"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/textView2Relay_1"
+        app:layout_constraintTop_toBottomOf="@+id/buttonRelay_1" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
