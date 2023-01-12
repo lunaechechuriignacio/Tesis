@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         final TextView dataStringTextView= findViewById(R.id.textTest);
         final TextView dataIntTextView=findViewById(R.id.dataInt);
+        final Switch manualSwitch=findViewById(R.id.switchOn_Off);
         FirebaseDatabase database=FirebaseDatabase.getInstance();
         final DatabaseReference reference= database.getReference(path).child(pathTestString);
         reference.addValueEventListener(new ValueEventListener() {
@@ -43,6 +46,19 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
             }
         });
+        manualSwitch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FirebaseDatabase database=FirebaseDatabase.getInstance();
+                final DatabaseReference reference= database.getReference(path).child(pathTestString);
+               if (manualSwitch.isChecked())
+                reference.setValue(1) ;
+               else
+                   reference.setValue(0);
+            }
+        });
+
 
     }
+
 }
