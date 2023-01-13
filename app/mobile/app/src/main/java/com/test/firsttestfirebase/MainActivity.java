@@ -17,16 +17,21 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.util.ArrayList;
+
 public class MainActivity extends AppCompatActivity {
     // private static final String  path="Test";
     // private static final String  pathTestString="TestString";
     private static final String path = "pir_sensor";
     private static final String pathTestString = "automatic";
-
+private GetDataFirebaseRelay getdataRelay;
+    private ArrayList<Relay> relays;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        getdataRelay=new GetDataFirebaseRelay("relays");
+        getdataRelay.getDAtaRelays(relays=new ArrayList<>());
         final TextView dataStringTextView = findViewById(R.id.textTest);
         final TextView dataIntTextView = findViewById(R.id.dataInt);
         final Switch manualSwitch = findViewById(R.id.switchOn_OffRelay_1);
@@ -71,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
                 if (automaticSwitch.isChecked()) {
                     manualSwitch.setChecked(false);
                     manualSwitch.setEnabled(false);
-                    reference.setValue(1);
+                    reference.setValue(0);
                 } else {
                     manualSwitch.setEnabled(true);
-                    reference.setValue(0);
+                    reference.setValue(1);
                 }
             }
         });
@@ -83,11 +88,11 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference reference = database.getReference(path).child("status");
+                final DatabaseReference reference = database.getReference("relays").child("relay_1").child("status");
                 if (manualSwitch.isChecked())
-                    reference.setValue(1);
-                else
                     reference.setValue(0);
+                else
+                    reference.setValue(1);
             }
 
         });
