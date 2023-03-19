@@ -2,26 +2,22 @@ package com.test.firsttestfirebase.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.test.firsttestfirebase.R;
-import com.test.firsttestfirebase.model.Relay;
 import com.test.firsttestfirebase.service.FirebaseService;
 
-import java.util.ArrayList;
-
 public class MainActivity extends AppCompatActivity {
+    private static final FirebaseService firebaseService = FirebaseService.getInstance();
     private static final String PIR_SENSOR_PATH = "pir_sensor";
     private static final String PIR_SENSOR_PROPERTY_AUTOMATIC = "automatic";
 
@@ -78,13 +74,10 @@ public class MainActivity extends AppCompatActivity {
         });
 
         manualSwitch.setOnClickListener(view -> {
-            //new FirebaseService().testGetData();
-            FirebaseDatabase database13 = FirebaseDatabase.getInstance();
-            final DatabaseReference reference13 = database13.getReference("relays").child("relay_1").child("status");
             if (manualSwitch.isChecked())
-                reference13.setValue(0);
+                firebaseService.setRelayPropertyValue(1, "status", 0);
             else
-                reference13.setValue(1);
+                firebaseService.setRelayPropertyValue(1, "status", 1);
         });
     }
 }

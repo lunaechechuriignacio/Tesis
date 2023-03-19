@@ -1,12 +1,12 @@
 package com.test.firsttestfirebase.service;
 
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.model.ComponentStatus;
 import com.test.firsttestfirebase.model.PirSensor;
 import com.test.firsttestfirebase.model.Relay;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +23,6 @@ public class FirebaseService {
 
     private FirebaseService() {
         this.database = FirebaseDatabase.getInstance();
-        instance = new FirebaseService();
     }
 
     public static FirebaseService getInstance() {
@@ -32,6 +31,7 @@ public class FirebaseService {
     }
 
     public Object getPirSensorPropertyValue(String property) {
+        // TODO: es asincronico. Se sigue investigando...
         return "";
     }
 
@@ -42,6 +42,7 @@ public class FirebaseService {
     }
 
     public Object getRelayPropertyValue(Integer relayNumber, String property) {
+        // TODO: es asincronico. Se sigue investigando...
         return "";
     }
 
