@@ -1,8 +1,8 @@
 package com.test.firsttestfirebase.model;
 
 public class PirSensor extends Component {
-    private boolean automatic;
-    private int timeSeconds;
+    private Boolean automatic;
+    private Integer timeSeconds;
 
     public PirSensor() {
         super("pir_sensor");
@@ -12,19 +12,19 @@ public class PirSensor extends Component {
         this.timeSeconds = 0;
     }
 
-    public boolean isAutomatic() {
+    public Boolean isAutomatic() {
         return automatic;
     }
 
-    public void setAutomatic(boolean automatic) {
+    public void setAutomatic(Boolean automatic) {
         this.automatic = automatic;
     }
 
-    public int getTimeSeconds() {
+    public Integer getTimeSeconds() {
         return timeSeconds;
     }
 
-    public void setTimeSeconds(int timeSeconds) {
+    public void setTimeSeconds(Integer timeSeconds) {
         this.timeSeconds = timeSeconds;
     }
 }

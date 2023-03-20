@@ -3,12 +3,12 @@ package com.test.firsttestfirebase.model;
 public class Relay extends Component {
     private final String path = "relays";
 
-    private int number;
+    private Integer number;
     private String startTime;
     private String endTime;
-    private boolean automatic;
+    private Boolean automatic;
 
-    public Relay(int number) {
+    public Relay(Integer number) {
         super("relay_" + number);
         this.componentStatus = ComponentStatus.OFF;
 
@@ -22,11 +22,11 @@ public class Relay extends Component {
         return path;
     }
 
-    public int getNumber() {
+    public Integer getNumber() {
         return number;
     }
 
-    public void setNumber(int number) {
+    public void setNumber(Integer number) {
         this.number = number;
     }
 
@@ -46,11 +46,11 @@ public class Relay extends Component {
         this.endTime = endTime;
     }
 
-    public boolean isAutomatic() {
+    public Boolean isAutomatic() {
         return automatic;
     }
 
-    public void setAutomatic(boolean automatic) {
+    public void setAutomatic(Boolean automatic) {
         this.automatic = automatic;
     }
 }

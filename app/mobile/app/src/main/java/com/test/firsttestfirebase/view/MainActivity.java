@@ -14,19 +14,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.test.firsttestfirebase.R;
+import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.service.FirebaseService;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final FirebaseService firebaseService = FirebaseService.getInstance();
-    private static final String PIR_SENSOR_PATH = "pir_sensor";
-    private static final String PIR_SENSOR_PROPERTY_AUTOMATIC = "automatic";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //getdataRelay=new GetDataFirebaseRelay("relays");
-        //getdataRelay.getDAtaRelays(relays=new ArrayList<>());
+
         final TextView dataStringTextView = findViewById(R.id.textTest);
         final TextView dataIntTextView = findViewById(R.id.dataInt);
         final Switch manualSwitch = findViewById(R.id.switchOn_OffRelay_1);
@@ -35,7 +34,7 @@ public class MainActivity extends AppCompatActivity {
         final Button buttonEncendidoRelay_1 = findViewById(R.id.buttonEncendidoRelay_1);
         final EditText tiempoAutomatico = findViewById(R.id.editTextTimeswitchAutomaticoRelay_1);
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference reference = database.getReference(PIR_SENSOR_PATH).child(PIR_SENSOR_PROPERTY_AUTOMATIC);
+        final DatabaseReference reference = database.getReference("pir_sensor").child("automatic");
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -54,26 +53,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
         buttonRelay_1.setOnClickListener(view -> {
-            FirebaseDatabase database1 = FirebaseDatabase.getInstance();
-            final DatabaseReference reference1 = database1.getReference(PIR_SENSOR_PATH).child("time_seconds");
             int tiempo = Integer.parseInt(tiempoAutomatico.getText().toString());
-            reference1.setValue(tiempo * 60);
+            firebaseService.setPirSensorPropertyValue("time_seconds", tiempo * 60);
         });
 
         automaticSwitch.setOnClickListener(view -> {
-            FirebaseDatabase database12 = FirebaseDatabase.getInstance();
-            final DatabaseReference reference12 = database12.getReference(PIR_SENSOR_PATH).child("automatic");
             if (automaticSwitch.isChecked()) {
                 manualSwitch.setChecked(false);
                 manualSwitch.setEnabled(false);
-                reference12.setValue(0);
+                firebaseService.setPirSensorPropertyValue("automatic", 0);
             } else {
                 manualSwitch.setEnabled(true);
-                reference12.setValue(1);
+                firebaseService.setPirSensorPropertyValue("automatic", 1);
             }
         });
 
         manualSwitch.setOnClickListener(view -> {
+            // List<Component> componentList = firebaseService.getComponentList();
             if (manualSwitch.isChecked())
                 firebaseService.setRelayPropertyValue(1, "status", 0);
             else
