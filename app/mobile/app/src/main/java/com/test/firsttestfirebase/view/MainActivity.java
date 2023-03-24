@@ -14,9 +14,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.test.firsttestfirebase.R;
-import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.service.FirebaseService;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final FirebaseService firebaseService = FirebaseService.getInstance();
@@ -33,24 +31,7 @@ public class MainActivity extends AppCompatActivity {
         final Button buttonRelay_1 = findViewById(R.id.buttonRelay_1);
         final Button buttonEncendidoRelay_1 = findViewById(R.id.buttonEncendidoRelay_1);
         final EditText tiempoAutomatico = findViewById(R.id.editTextTimeswitchAutomaticoRelay_1);
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference reference = database.getReference("pir_sensor").child("automatic");
-
-        reference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                String value = snapshot.getValue(Integer.class).toString();
-                dataIntTextView.setText(value);
-
-                // value=snapshot.getValue(String.class);
-                //  dataStringTextView.setText(value);
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
-            }
-        });
+        this.buildListenerForPirSensorAutomatic(dataStringTextView);
 
         buttonRelay_1.setOnClickListener(view -> {
             int tiempo = Integer.parseInt(tiempoAutomatico.getText().toString());
@@ -74,6 +55,22 @@ public class MainActivity extends AppCompatActivity {
                 firebaseService.setRelayPropertyValue(1, "status", 0);
             else
                 firebaseService.setRelayPropertyValue(1, "status", 1);
+        });
+    }
+
+    private void buildListenerForPirSensorAutomatic(TextView textView) {
+        final DatabaseReference reference = FirebaseDatabase.getInstance().getReference("pir_sensor").child("automatic");
+        reference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                String value = FirebaseService.getInstance().getPirSensorPropertyValue("automatic").toString();
+                textView.setText(value);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Toast.makeText(MainActivity.this, "Fail to get data.", Toast.LENGTH_SHORT).show();
+            }
         });
     }
 }
