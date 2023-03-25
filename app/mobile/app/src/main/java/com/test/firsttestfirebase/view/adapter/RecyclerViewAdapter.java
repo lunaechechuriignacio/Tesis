@@ -12,7 +12,6 @@ import com.test.firsttestfirebase.mapper.Mapper;
 import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.model.Relay;
 import com.test.firsttestfirebase.service.FirebaseService;
-
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapter.ComponentViewHolder> {
