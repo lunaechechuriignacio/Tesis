@@ -1,5 +1,5 @@
 package com.test.firsttestfirebase.model;
 
-public enum ComponentStatus {
+public enum RelayStatus {
     ON, OFF
 }

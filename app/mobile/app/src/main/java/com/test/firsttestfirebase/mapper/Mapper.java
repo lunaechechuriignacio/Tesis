@@ -2,9 +2,9 @@ package com.test.firsttestfirebase.mapper;
 
 import com.google.firebase.database.DataSnapshot;
 import com.test.firsttestfirebase.model.Component;
-import com.test.firsttestfirebase.model.ComponentStatus;
 import com.test.firsttestfirebase.model.PirSensor;
 import com.test.firsttestfirebase.model.Relay;
+import com.test.firsttestfirebase.model.RelayStatus;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,30 +34,26 @@ public class Mapper {
         return componentList;
     }
 
-    public static Boolean toBoolean(ComponentStatus componentStatus) {
-        return componentStatus == ComponentStatus.ON;
+    public static Boolean toBoolean(RelayStatus relayStatus) {
+        return relayStatus == RelayStatus.ON;
     }
 
     private static PirSensor toPirSensor(DataSnapshot dataSnapshot) {
-        PirSensor pirSensor = new PirSensor();
-        pirSensor.setAutomatic(dataSnapshot.child("automatic").getValue(Integer.class) == 1);
-        pirSensor.setTimeSeconds(dataSnapshot.child("time_seconds").getValue(Integer.class));
+        Boolean isAutomatic = dataSnapshot.child("automatic").getValue(Integer.class) == 1;
+        Integer timeSeconds = dataSnapshot.child("time_seconds").getValue(Integer.class);
 
-        return pirSensor;
+        return new PirSensor(isAutomatic, timeSeconds);
     }
 
     private static Relay toRelay(Integer number, DataSnapshot dataSnapshot) {
-        Relay relay = new Relay(number);
-        relay.setAutomatic(dataSnapshot.child("automatic").getValue(Boolean.class));
-        relay.setStartTime(dataSnapshot.child("start_time").getValue(String.class));
-        relay.setEndTime(dataSnapshot.child("end_time").getValue(String.class));
-        relay.setComponentStatus(toComponentStatus(dataSnapshot.child("status").getValue(Integer.class)));
+        Boolean isAutomatic = dataSnapshot.child("automatic").getValue(Boolean.class);
+        RelayStatus relayStatus = toRelayStatus(dataSnapshot.child("status").getValue(Integer.class));
 
-        return relay;
+        return new Relay(number, isAutomatic, relayStatus);
     }
 
-    private static ComponentStatus toComponentStatus(Integer value) {
-        if (value == 1) return ComponentStatus.ON;
-        return ComponentStatus.OFF;
+    private static RelayStatus toRelayStatus(Integer value) {
+        if (value == 1) return RelayStatus.ON;
+        return RelayStatus.OFF;
     }
 }

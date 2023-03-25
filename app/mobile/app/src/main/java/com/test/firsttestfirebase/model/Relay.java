@@ -4,18 +4,15 @@ public class Relay extends Component {
     private final String path = "relays";
 
     private Integer number;
-    private String startTime;
-    private String endTime;
     private Boolean automatic;
+    protected RelayStatus relayStatus;
 
-    public Relay(Integer number) {
+    public Relay(Integer number, Boolean isAutomatic, RelayStatus relayStatus) {
         super("relay_" + number);
-        this.componentStatus = ComponentStatus.OFF;
 
         this.number = number;
-        this.startTime = "";
-        this.endTime = "";
-        this.automatic = false;
+        this.setAutomatic(isAutomatic);
+        this.setRelayStatus(relayStatus);
     }
 
     public String getPath() {
@@ -26,31 +23,19 @@ public class Relay extends Component {
         return number;
     }
 
-    public void setNumber(Integer number) {
-        this.number = number;
-    }
-
-    public String getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
-    }
-
-    public String getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
-    }
-
     public Boolean isAutomatic() {
         return automatic;
     }
 
     public void setAutomatic(Boolean automatic) {
         this.automatic = automatic;
+    }
+
+    public RelayStatus getRelayStatus() {
+        return relayStatus;
+    }
+
+    public void setRelayStatus(RelayStatus relayStatus) {
+        this.relayStatus = relayStatus;
     }
 }

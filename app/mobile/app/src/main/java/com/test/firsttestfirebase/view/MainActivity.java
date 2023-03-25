@@ -17,7 +17,6 @@ import com.test.firsttestfirebase.R;
 import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.service.FirebaseService;
 import com.test.firsttestfirebase.view.adapter.RecyclerViewAdapter;
-
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,13 +28,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        List<Component> componentList = firebaseService.getComponentList();
+
         this.rvComponents = findViewById(R.id.rvComponents);
         this.rvComponents.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         this.rvComponents.setLayoutManager(new LinearLayoutManager(this));
-
-        List<Component> componentList = firebaseService.getComponentList();
-        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(componentList);
-        this.rvComponents.setAdapter(recyclerViewAdapter);
+        this.rvComponents.setAdapter(new RecyclerViewAdapter(componentList));
     }
 
     private void buildListenerForPirSensorAutomatic(TextView textView) {

@@ -4,12 +4,11 @@ public class PirSensor extends Component {
     private Boolean automatic;
     private Integer timeSeconds;
 
-    public PirSensor() {
+    public PirSensor(Boolean isAutomatic, Integer timeSeconds) {
         super("pir_sensor");
-        this.componentStatus = ComponentStatus.ON;
 
-        this.automatic = false;
-        this.timeSeconds = 0;
+        this.setAutomatic(isAutomatic);
+        this.setTimeSeconds(timeSeconds);
     }
 
     public Boolean isAutomatic() {
