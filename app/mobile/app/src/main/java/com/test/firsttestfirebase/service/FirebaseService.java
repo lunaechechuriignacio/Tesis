@@ -1,6 +1,6 @@
 package com.test.firsttestfirebase.service;
 
-import com.test.firsttestfirebase.mapper.Mapper;
+import com.test.firsttestfirebase.mapper.ComponentMapper;
 import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.repository.FirebaseRepository;
 import java.util.List;
@@ -35,6 +35,6 @@ public class FirebaseService {
     }
 
     public List<Component> getComponentList() {
-        return Mapper.toComponentList(this.firebaseRepository.getAllData());
+        return ComponentMapper.toComponentList(this.firebaseRepository.getAllData());
     }
 }

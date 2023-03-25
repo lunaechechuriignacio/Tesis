@@ -2,37 +2,36 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
     <TextView
-        android:id="@+id/tv_component"
+        android:id="@+id/tv_relay"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="16dp"
         android:textSize="20sp"
         android:fontFamily="monospace"
-        android:text="COMPONENT" />
+        android:text="RELAY" />
 
     <Switch
-        android:id="@+id/sw_automatic"
+        android:id="@+id/sw_relay_automatic"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:text="Automatic"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tv_component" />
+        app:layout_constraintLeft_toRightOf="@id/tv_relay" />
 
     <Switch
-        android:id="@+id/sw_light"
+        android:id="@+id/sw_relay_light"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="8dp"
         android:text="Light"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/sw_automatic" />
+        app:layout_constraintLeft_toRightOf="@id/sw_relay_automatic" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

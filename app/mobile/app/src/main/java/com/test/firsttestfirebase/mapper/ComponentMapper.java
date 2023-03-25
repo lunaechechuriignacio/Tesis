@@ -8,7 +8,7 @@ import com.test.firsttestfirebase.model.RelayStatus;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Mapper {
+public class ComponentMapper {
     private static final String PIR_SENSOR_ACCESS_PARTIAL_KEY = "PIR_SENSOR";
     private static final String RELAY_ACCESS_PARTIAL_KEY = "RELAY";
 
@@ -34,20 +34,10 @@ public class Mapper {
         return componentList;
     }
 
-    public static Boolean toBoolean(RelayStatus relayStatus) {
-        return relayStatus == RelayStatus.ON;
-    }
-
-    public static Integer toInteger(Boolean on) {
-        if (on) return 1;
-        return 0;
-    }
-
     private static PirSensor toPirSensor(DataSnapshot dataSnapshot) {
-        Boolean isAutomatic = dataSnapshot.child("automatic").getValue(Integer.class) == 1;
         Integer timeSeconds = dataSnapshot.child("time_seconds").getValue(Integer.class);
 
-        return new PirSensor(isAutomatic, timeSeconds);
+        return new PirSensor(timeSeconds);
     }
 
     private static Relay toRelay(Integer number, DataSnapshot dataSnapshot) {
@@ -58,7 +48,6 @@ public class Mapper {
     }
 
     private static RelayStatus toRelayStatus(Integer value) {
-        if (value == 1) return RelayStatus.ON;
-        return RelayStatus.OFF;
+        return (value == 1 ? RelayStatus.ON : RelayStatus.OFF);
     }
 }
