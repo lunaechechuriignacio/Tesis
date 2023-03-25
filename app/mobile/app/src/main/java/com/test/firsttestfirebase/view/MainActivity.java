@@ -2,10 +2,10 @@ package com.test.firsttestfirebase.view;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.google.firebase.database.DataSnapshot;
@@ -14,48 +14,28 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.test.firsttestfirebase.R;
+import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.service.FirebaseService;
+import com.test.firsttestfirebase.view.adapter.RecyclerViewAdapter;
+
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final FirebaseService firebaseService = FirebaseService.getInstance();
+    private RecyclerView rvComponents;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        final TextView dataStringTextView = findViewById(R.id.textTest);
-        final TextView dataIntTextView = findViewById(R.id.dataInt);
-        final Switch manualSwitch = findViewById(R.id.switchOn_OffRelay_1);
-        final Switch automaticSwitch = findViewById(R.id.switchAutomaticoRelay_1);
-        final Button buttonRelay_1 = findViewById(R.id.buttonRelay_1);
-        final Button buttonEncendidoRelay_1 = findViewById(R.id.buttonEncendidoRelay_1);
-        final EditText tiempoAutomatico = findViewById(R.id.editTextTimeswitchAutomaticoRelay_1);
-        this.buildListenerForPirSensorAutomatic(dataStringTextView);
+        this.rvComponents = findViewById(R.id.rvComponents);
+        this.rvComponents.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        this.rvComponents.setLayoutManager(new LinearLayoutManager(this));
 
-        buttonRelay_1.setOnClickListener(view -> {
-            int tiempo = Integer.parseInt(tiempoAutomatico.getText().toString());
-            firebaseService.setPirSensorPropertyValue("time_seconds", tiempo * 60);
-        });
-
-        automaticSwitch.setOnClickListener(view -> {
-            if (automaticSwitch.isChecked()) {
-                manualSwitch.setChecked(false);
-                manualSwitch.setEnabled(false);
-                firebaseService.setPirSensorPropertyValue("automatic", 0);
-            } else {
-                manualSwitch.setEnabled(true);
-                firebaseService.setPirSensorPropertyValue("automatic", 1);
-            }
-        });
-
-        manualSwitch.setOnClickListener(view -> {
-            // List<Component> componentList = firebaseService.getComponentList();
-            if (manualSwitch.isChecked())
-                firebaseService.setRelayPropertyValue(1, "status", 0);
-            else
-                firebaseService.setRelayPropertyValue(1, "status", 1);
-        });
+        List<Component> componentList = firebaseService.getComponentList();
+        RecyclerViewAdapter recyclerViewAdapter = new RecyclerViewAdapter(componentList);
+        this.rvComponents.setAdapter(recyclerViewAdapter);
     }
 
     private void buildListenerForPirSensorAutomatic(TextView textView) {
