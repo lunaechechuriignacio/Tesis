@@ -4,7 +4,6 @@
 #include <FirebaseESP32.h>
 #include <Relay.h>
 #include <Wire.h>
-//#include "RTClib.h"
 #define LED 2  // esto prueba que esta funcionando el sensor. Enciende el led de la placa esp32 BORRAR
 #define FIREBASE_HOST "test-bdd-5f5f7-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "HKXQvDUpyBepZpCVXQ0XRTqFsh9gmULP4cpRWU1n"
@@ -13,7 +12,6 @@ WiFiMulti wifiMulti;
 FirebaseData fbdo;
 
 const uint32_t waitTimeWifi = 5000;
-const int pir_sensor = 19;
 
 Relay relay_1;
 Relay relay_2;
@@ -23,8 +21,6 @@ Relay relay_5;
 Relay relay_6;
 Relay relay_7;
 Relay relay_8;
-int statusRelay1 = 1;
-
 
 void setPinRelay() {
   relay_1.setPort(14);
