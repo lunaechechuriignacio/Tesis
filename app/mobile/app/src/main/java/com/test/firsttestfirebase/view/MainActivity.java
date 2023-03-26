@@ -21,7 +21,6 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     private static final FirebaseService firebaseService = FirebaseService.getInstance();
-    private RecyclerView rvRelays;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,10 +47,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void renderRelayList(List<Relay> relayList) {
-        this.rvRelays = findViewById(R.id.rv_relays);
-        this.rvRelays.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-        this.rvRelays.setLayoutManager(new LinearLayoutManager(this));
-        this.rvRelays.setAdapter(new RelayRecyclerViewAdapter(relayList));
+        RecyclerView rvRelays = findViewById(R.id.rv_relays);
+        rvRelays.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        rvRelays.setLayoutManager(new LinearLayoutManager(this));
+        rvRelays.setAdapter(new RelayRecyclerViewAdapter(relayList));
     }
 
     private PirSensor getPirSensor(@NonNull List<Component> componentList) {

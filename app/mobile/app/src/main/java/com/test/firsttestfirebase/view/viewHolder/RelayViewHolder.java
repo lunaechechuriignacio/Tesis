@@ -11,9 +11,9 @@ import com.test.firsttestfirebase.model.Relay;
 import com.test.firsttestfirebase.service.FirebaseService;
 
 public class RelayViewHolder extends RecyclerView.ViewHolder {
-    private TextView tvRelay;
-    private Switch swRelayAutomatic;
-    private Switch swRelayLight;
+    private final TextView tvRelay;
+    private final Switch swRelayAutomatic;
+    private final Switch swRelayLight;
 
     public RelayViewHolder(@NonNull View itemView) {
         super(itemView);

@@ -11,7 +11,7 @@ import com.test.firsttestfirebase.view.viewHolder.RelayViewHolder;
 import java.util.List;
 
 public class RelayRecyclerViewAdapter extends RecyclerView.Adapter<RelayViewHolder> {
-    private List<Relay> relayList;
+    private final List<Relay> relayList;
 
     public RelayRecyclerViewAdapter(List<Relay> relayList) {
         this.relayList = relayList;
