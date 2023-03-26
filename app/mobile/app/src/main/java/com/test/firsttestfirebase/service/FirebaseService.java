@@ -1,5 +1,6 @@
 package com.test.firsttestfirebase.service;
 
+import com.google.firebase.database.DatabaseReference;
 import com.test.firsttestfirebase.mapper.ComponentMapper;
 import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.repository.FirebaseRepository;
@@ -18,12 +19,20 @@ public class FirebaseService {
         return instance;
     }
 
+    public DatabaseReference getPirSensorPropertyReference(String property) {
+        return this.firebaseRepository.getPirSensorPropertyReference(property);
+    }
+
     public Object getPirSensorPropertyValue(String property) {
         return this.firebaseRepository.getPirSensorPropertyData(property).getValue();
     }
 
     public void setPirSensorPropertyValue(String property, Object value) {
         this.firebaseRepository.setPirSensorPropertyData(property, value);
+    }
+
+    public DatabaseReference getRelayPropertyReference(Integer relayNumber, String property) {
+        return this.firebaseRepository.getRelayPropertyReference(relayNumber, property);
     }
 
     public Object getRelayPropertyValue(Integer relayNumber, String property) {

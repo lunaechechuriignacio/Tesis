@@ -3,6 +3,7 @@ package com.test.firsttestfirebase.repository;
 import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 public class FirebaseRepository {
@@ -22,6 +23,11 @@ public class FirebaseRepository {
         return instance;
     }
 
+    public DatabaseReference getPirSensorPropertyReference(String property) {
+        return this.database.getReference(PIR_SENSOR_PATH)
+                .child(property);
+    }
+
     public DataSnapshot getPirSensorPropertyData(String property) {
         Task<DataSnapshot> dataSnapshotTask = this.database.getReference(PIR_SENSOR_PATH)
                 .child(property)
@@ -35,6 +41,12 @@ public class FirebaseRepository {
         this.database.getReference(PIR_SENSOR_PATH)
                 .child(property)
                 .setValue(value);
+    }
+
+    public DatabaseReference getRelayPropertyReference(Integer relayNumber, String property) {
+        return this.database.getReference(RELAY_PATH)
+                .child(RELAY_PARTIAL_ALIAS + relayNumber)
+                .child(property);
     }
 
     public DataSnapshot getRelayPropertyData(Integer relayNumber, String property) {

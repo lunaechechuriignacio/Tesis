@@ -7,6 +7,10 @@ public class DataMapper {
         return relayStatus == RelayStatus.ON;
     }
 
+    public static Boolean toBoolean(Integer value) {
+        return (value == 1 ? Boolean.TRUE : Boolean.FALSE);
+    }
+
     public static Integer toInteger(Boolean on) {
         return (on ? 1 : 0);
     }

@@ -15,6 +15,7 @@ public class ComponentMapper {
     private static final String PIR_SENSOR_PATH = "pir_sensor";
     private static final String RELAY_PATH = "relays";
     private static final String RELAY_PARTIAL_ALIAS = "relay_";
+    private static final Integer RELAYS_COUNT = 8;
 
     public static List<Component> toComponentList(DataSnapshot dataSnapshot) {
         List<Component> componentList = new ArrayList<>();
@@ -22,7 +23,7 @@ public class ComponentMapper {
         PirSensor pirSensor = toPirSensor(dataSnapshot.child(PIR_SENSOR_PATH));
         componentList.add(pirSensor);
 
-        for (int i = 0; i < 8; i++) {
+        for (int i = 0; i < RELAYS_COUNT; i++) {
             componentList.add(
                     toRelay(
                             i+1,

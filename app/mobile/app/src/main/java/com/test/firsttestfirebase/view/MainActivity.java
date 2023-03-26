@@ -6,16 +6,13 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import android.os.Bundle;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.TextView;
 import com.test.firsttestfirebase.R;
-import com.test.firsttestfirebase.mapper.DataMapper;
 import com.test.firsttestfirebase.model.Component;
 import com.test.firsttestfirebase.model.PirSensor;
 import com.test.firsttestfirebase.model.Relay;
 import com.test.firsttestfirebase.service.FirebaseService;
 import com.test.firsttestfirebase.view.adapter.RelayRecyclerViewAdapter;
+import com.test.firsttestfirebase.view.viewHolder.PirSensorViewHolder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,26 +24,17 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        List<Component> componentList = firebaseService.getComponentList();
-
-        this.renderPirSensor(getPirSensor(componentList));
-        this.renderRelayList(getRelayList(componentList));
+        List<Component> componentInitialList = firebaseService.getComponentList();
+        this.bindPirSensor(getPirSensor(componentInitialList));
+        this.bindRelayList(getRelayList(componentInitialList));
     }
 
-    private void renderPirSensor(PirSensor pirSensor) {
-        TextView tvSensor = findViewById(R.id.tv_sensor);
-        EditText etSensorTimeSeconds = findViewById(R.id.et_sensor_time_seconds);
-        Button btnSensorConfirmTimeSeconds = findViewById(R.id.btn_sensor_confirm_time_seconds);
-
-        tvSensor.setText(DataMapper.toCleanComponentAlias(pirSensor.getAlias()));
-        etSensorTimeSeconds.setText(pirSensor.getTimeSeconds().toString());
-
-        btnSensorConfirmTimeSeconds.setOnClickListener(view -> {
-            firebaseService.setPirSensorPropertyValue("time_seconds", Integer.parseInt(etSensorTimeSeconds.getText().toString()));
-        });
+    private void bindPirSensor(PirSensor pirSensor) {
+        PirSensorViewHolder pirSensorViewHolder = new PirSensorViewHolder(findViewById(R.id.cv_sensor));
+        pirSensorViewHolder.bind(pirSensor);
     }
 
-    private void renderRelayList(List<Relay> relayList) {
+    private void bindRelayList(List<Relay> relayList) {
         RecyclerView rvRelays = findViewById(R.id.rv_relays);
         rvRelays.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
         rvRelays.setLayoutManager(new LinearLayoutManager(this));
@@ -60,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
         while(pirSensor == null && index < componentList.size()) {
             Component currentComponent = componentList.get(index);
             if(currentComponent instanceof PirSensor) pirSensor = ((PirSensor)componentList.get(index));
-
             index++;
         }
 
