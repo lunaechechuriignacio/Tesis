@@ -1,5 +1,6 @@
 package com.test.firsttestfirebase.view.viewHolder;
 
+import android.graphics.Color;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -22,6 +23,9 @@ public class RelayViewHolder extends RecyclerView.ViewHolder {
     private final String PROPERTY_AUTOMATIC = "automatic";
     private final String PROPERTY_STATUS = "status";
 
+    private final Integer COLOR_RED = Color.parseColor("#D83714");
+    private final Integer COLOR_GREEN = Color.parseColor("#81DE20");
+
     public RelayViewHolder(@NonNull View itemView) {
         super(itemView);
         this.tvRelay = itemView.findViewById(R.id.tv_relay);
@@ -31,8 +35,12 @@ public class RelayViewHolder extends RecyclerView.ViewHolder {
 
     public void bind(Relay relay) {
         this.tvRelay.setText(DataMapper.toCleanComponentAlias(relay.getAlias()));
-        this.swRelayAutomatic.setChecked(relay.isAutomatic()); this.setEnabledSwRelayLight();
+
+        this.swRelayAutomatic.setChecked(relay.isAutomatic());
+        this.setEnabledSwRelayLight();
+
         this.swRelayLight.setChecked(DataMapper.toBoolean(relay.getRelayStatus()));
+        this.setColorTvRelay();
 
         this.bindComponentViewListeners(relay.getNumber());
         this.bindDatabaseListeners(relay.getNumber());
@@ -45,6 +53,7 @@ public class RelayViewHolder extends RecyclerView.ViewHolder {
         });
         this.swRelayLight.setOnClickListener(view -> {
             FirebaseService.getInstance().setRelayPropertyValue(relayNumber, PROPERTY_STATUS, DataMapper.toInteger(this.swRelayLight.isChecked()));
+            this.setColorTvRelay();
         });
     }
 
@@ -70,6 +79,7 @@ public class RelayViewHolder extends RecyclerView.ViewHolder {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer newValue = snapshot.getValue(Integer.class);
                 swRelayLight.setChecked(DataMapper.toBoolean(newValue));
+                setColorTvRelay();
             }
 
             @Override
@@ -81,5 +91,9 @@ public class RelayViewHolder extends RecyclerView.ViewHolder {
 
     private void setEnabledSwRelayLight() {
         this.swRelayLight.setEnabled(!this.swRelayAutomatic.isChecked());
+    }
+
+    private void setColorTvRelay() {
+        this.tvRelay.setTextColor(this.swRelayLight.isChecked() ? COLOR_GREEN : COLOR_RED);
     }
 }
