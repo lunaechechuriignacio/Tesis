@@ -32,7 +32,6 @@ void Relay::setStatus(int newStatus){
      status=newStatus;
 }
 
-
 bool Relay::getAutomatic(){
      return automatic;
 }
@@ -40,4 +39,3 @@ bool Relay::getAutomatic(){
 void Relay::setAutomatic(bool newAutomatic){
      automatic=newAutomatic;
 }    
-

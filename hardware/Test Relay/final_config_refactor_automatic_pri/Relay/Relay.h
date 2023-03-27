@@ -17,15 +17,13 @@ class Relay {
      
          bool getAutomatic ();
          void setAutomatic (bool automatic);
-         
-      
+              
    
   private:
            int number;
            int port;
            int status;
-           bool automatic;        
-     
+           bool automatic;      
 };
 #endif
 
