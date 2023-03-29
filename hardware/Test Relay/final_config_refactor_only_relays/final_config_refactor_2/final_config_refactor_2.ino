@@ -4,7 +4,6 @@
 #include <FirebaseESP32.h>
 #include <Relay.h>
 #include <Wire.h>
-#define LED 2  // esto prueba que esta funcionando el sensor. Enciende el led de la placa esp32 BORRAR
 #define FIREBASE_HOST "test-bdd-5f5f7-default-rtdb.firebaseio.com"
 #define FIREBASE_AUTH "HKXQvDUpyBepZpCVXQ0XRTqFsh9gmULP4cpRWU1n"
 
@@ -118,11 +117,15 @@ void connectFirebase() {
 }
 
 void getStatusRelay(Relay relay) {
+  int status = 0;
 
   if (Firebase.getInt(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/status")) {
-    Serial.print("Get int data A success, str = ");
-    Serial.println(fbdo.intData());
-    digitalWrite(relay.getPort(), fbdo.intData());  
+     status = fbdo.intData();
+    if (status == 1)
+      status = 0;
+    else
+      status = 1;
+    digitalWrite(relay.getPort(), status);
   } else {
     Serial.print("Error in getInt, ");
     Serial.println(fbdo.errorReason());
@@ -132,21 +135,17 @@ void getStatusRelay(Relay relay) {
 
 void getUpdateRelay(Relay relay) {
   getStatusRelay(relay);
- 
 }
 
 void setup() {
   Serial.begin(115200);
-  delay(300);  // es para que el sensor PIR se estabilice con el ambiente
+
   setupRelay();
   setModeAllRelays();
-
-  pinMode(LED, OUTPUT);  // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
   setOffAllRelays();
 
   connectWifi();
   connectFirebase();
-
 }
 
 void loop() {
@@ -159,7 +158,5 @@ void loop() {
   getUpdateRelay(relay_5);
   getUpdateRelay(relay_6);
   getUpdateRelay(relay_7);
-  getUpdateRelay(relay_8); 
-
-  
+  getUpdateRelay(relay_8);
 }
