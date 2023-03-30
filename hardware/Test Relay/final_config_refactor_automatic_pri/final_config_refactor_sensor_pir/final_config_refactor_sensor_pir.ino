@@ -82,7 +82,7 @@ void setModePirSensor() {
   pinMode(pir_sensor, INPUT);  // setea el pin del  ESP32 en modo entrada para leer los datos del sensor pir
 }
 
-void readStatusPirSensor() {
+void readStatusPirSensor(Relay relay) {
   previousStatusPirSensor = currentStatusPirSensor;  //guarda el estado anterior que se encontraba el sensor
   currentStatusPirSensor = digitalRead(pir_sensor);  // lee el estado actual del sensor
 
@@ -92,14 +92,14 @@ void readStatusPirSensor() {
     digitalWrite(LED, HIGH);                      // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
     // digitalWrite(relay_1.getPort(), 0);           // ENCIENDO EL RELAY 1
-    relay_1.setStatus(0);
+    relay.setStatus(1);
   } else if (pirSensorDelay.justFinished()) {
     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
     Serial.println("MOVIMIENTO NO DETECTADO");
     // digitalWrite(relay_1.getPort(), 1);  // APAGO EL RELAY 1
-    relay_1.setStatus(1);
+    relay.setStatus(0);
   }
-  digitalWrite(relay_1.getPort(), relay_1.getStatus());
+  digitalWrite(relay.getPort(), relay.getStatus());
 }
 
 void connectWifi() {
@@ -186,6 +186,7 @@ void getAutomaticRelay(Relay relay) {
 
 void getUpdateRelay(Relay relay) {
   getStatusRelay(relay);
+  readStatusPirSensor(relay);
   getAutomaticRelay(relay);
 }
 
@@ -206,7 +207,7 @@ void setup() {
 
 void loop() {
   verifyConnectionWifi();
-
+  getUpdateRelay(relay_1);
   getUpdateRelay(relay_2);
   getUpdateRelay(relay_3);
   getUpdateRelay(relay_4);
@@ -215,13 +216,13 @@ void loop() {
   getUpdateRelay(relay_7);
   getUpdateRelay(relay_8);
 
-  updatePirSensorAutomatic();
+  /*updatePirSensorAutomatic();
   if (pirSensorAutomatic == 0) {
     readStatusPirSensor();
     Firebase.setInt(fbdo, "/relays/relay_1/status", relay_1.getStatus());
   } else {
     getUpdateRelay(relay_1);
-  }
+  }*/
 
   
 
