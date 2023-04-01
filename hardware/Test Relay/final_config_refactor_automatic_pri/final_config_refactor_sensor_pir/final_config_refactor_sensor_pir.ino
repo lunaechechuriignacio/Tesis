@@ -82,8 +82,35 @@ void setModePirSensor() {
   pinMode(pir_sensor, INPUT);  // setea el pin del  ESP32 en modo entrada para leer los datos del sensor pir
 }
 
-void readStatusPirSensor() {
-  previousStatusPirSensor = currentStatusPirSensor;  //guarda el estado anterior que se encontraba el sensor
+void readStatusPirSensor(Relay relay) {
+
+   previousStatusPirSensor = currentStatusPirSensor; 
+  currentStatusPirSensor = digitalRead(pir_sensor);   
+
+    
+  if (previousStatusPirSensor == LOW && currentStatusPirSensor == HIGH) {   
+    //pirSensorDelay.start(1000);
+    Serial.println("Motion detected!");   
+    digitalWrite(LED,HIGH);// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
+
+     Firebase.getInt(fbdo, "/pir_sensor/time_seconds");
+    pirSensorDelay.start(fbdo.intData() * 1000);  // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario se pasa COMO PARAMETRO DESDE LA APLICACION
+                     
+    //Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
+    digitalWrite(relay.getPort(), 0);             // ENCIENDO EL RELAY 1
+    relay.setStatus(1);
+  } else if (/*previousStatusPirSensor == HIGH && currentStatusPirSensor == LOW &&*/ pirSensorDelay.justFinished()) {   
+    Serial.println("Motion stopped!");
+     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
+    
+    digitalWrite(relay.getPort(), 1);  // APAGO EL RELAY 1
+    relay.setStatus(0);
+  }
+  writeDatabaseRelayStatus(relay);
+  }
+
+  
+  /*previousStatusPirSensor = currentStatusPirSensor;  //guarda el estado anterior que se encontraba el sensor
   currentStatusPirSensor = digitalRead(pir_sensor);  // lee el estado actual del sensor
 
   if (previousStatusPirSensor == LOW && currentStatusPirSensor == HIGH) {  // el estado pasa de LOW -> HIGH ---DETECTA MOVIMIENTO
@@ -91,17 +118,20 @@ void readStatusPirSensor() {
     pirSensorDelay.start(fbdo.intData() * 1000);  // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario se pasa COMO PARAMETRO DESDE LA APLICACION
     digitalWrite(LED, HIGH);                      // esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
     Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
-    // digitalWrite(relay_1.getPort(), 0);           // ENCIENDO EL RELAY 1
-    relay_1.setStatus(0);
+    digitalWrite(relay.getPort(), 0);             // ENCIENDO EL RELAY 1
+    relay.setStatus(1);
   } else if (pirSensorDelay.justFinished()) {
     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
     Serial.println("MOVIMIENTO NO DETECTADO");
-    // digitalWrite(relay_1.getPort(), 1);  // APAGO EL RELAY 1
-    relay_1.setStatus(1);
+    digitalWrite(relay.getPort(), 1);  // APAGO EL RELAY 1
+    relay.setStatus(0);
   }
-  digitalWrite(relay_1.getPort(), relay_1.getStatus());
-}
+  writeDatabaseRelayStatus(relay);
+}*/
 
+void writeDatabaseRelayStatus(Relay relay) {
+  Firebase.setInt(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/status", relay.getStatus());
+}
 void connectWifi() {
   Serial.println("\nIniciando multi Wifi");
 
@@ -148,23 +178,16 @@ void connectFirebase() {
   Firebase.reconnectWiFi(true);
 }
 
-void updatePirSensorAutomatic() {
-  if (Firebase.getInt(fbdo, "/pir_sensor/automatic")) {
-    Serial.print("Get int data A success, str = ");
-    Serial.println(fbdo.intData());
-    pirSensorAutomatic = fbdo.intData();
-  } else {
-    Serial.print("Error in getInt, ");
-    Serial.println(fbdo.errorReason());
-  }
-}
-
 void getStatusRelay(Relay relay) {
+  int status = 0;
 
   if (Firebase.getInt(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/status")) {
-    Serial.print("Get int data A success, str = ");
-    Serial.println(fbdo.intData());
-    digitalWrite(relay.getPort(), fbdo.intData());  //////////////////////////////////////
+    status = fbdo.intData();
+    if (status == 1)
+      status = 0;
+    else
+      status = 1;
+    digitalWrite(relay.getPort(), status);
   } else {
     Serial.print("Error in getInt, ");
     Serial.println(fbdo.errorReason());
@@ -175,9 +198,10 @@ void getStatusRelay(Relay relay) {
 void getAutomaticRelay(Relay relay) {
 
   if (Firebase.getBool(fbdo, "/relays/relay_" + (String)(relay.getNumber()) + "/automatic")) {
-    Serial.print("Get int data A success, str = ");
+    Serial.print("Get int data A success, automatic = ");
     Serial.println(fbdo.boolData());
-    relay.setAutomatic( fbdo.boolData());  //////////////////////////////////////
+    relay.setAutomatic(fbdo.boolData());
+      //////////////////////////////////////
   } else {
     Serial.print("Error in getInt, ");
     Serial.println(fbdo.errorReason());
@@ -185,10 +209,13 @@ void getAutomaticRelay(Relay relay) {
 }
 
 void getUpdateRelay(Relay relay) {
-  getStatusRelay(relay);
   getAutomaticRelay(relay);
+  bool automatic=relay.getAutomatic();
+  if (automatic )
+   readStatusPirSensor(relay);
+ else
+    getStatusRelay(relay);
 }
-
 
 void setup() {
   Serial.begin(115200);
@@ -205,8 +232,8 @@ void setup() {
 }
 
 void loop() {
-  verifyConnectionWifi();
-
+ verifyConnectionWifi();
+ getUpdateRelay(relay_1);
   getUpdateRelay(relay_2);
   getUpdateRelay(relay_3);
   getUpdateRelay(relay_4);
@@ -215,14 +242,14 @@ void loop() {
   getUpdateRelay(relay_7);
   getUpdateRelay(relay_8);
 
-  updatePirSensorAutomatic();
-  if (pirSensorAutomatic == 0) {
+//readStatusPirSensor(relay_8);
+
+  /* if (pirSensorAutomatic == 0) {
     readStatusPirSensor();
     Firebase.setInt(fbdo, "/relays/relay_1/status", relay_1.getStatus());
   } else {
     getUpdateRelay(relay_1);
   }
-
-  
-
+*/
 }
+
