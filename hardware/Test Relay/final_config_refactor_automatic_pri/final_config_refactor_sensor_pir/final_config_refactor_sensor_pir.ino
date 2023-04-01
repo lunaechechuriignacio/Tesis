@@ -22,11 +22,12 @@ Relay relay_5;
 Relay relay_6;
 Relay relay_7;
 Relay relay_8;
-int statusRelay1 = 1;
+
 
 int currentStatusPirSensor = LOW;   // estado actual del pin
 int previousStatusPirSensor = LOW;  // estado anterior del pin
 int pirSensorAutomatic = 0;
+bool enabledPir=false;
 millisDelay pirSensorDelay;  // defino la variable de tiempo para el sensor pir
 
 void setPinRelay() {
@@ -82,31 +83,31 @@ void setModePirSensor() {
   pinMode(pir_sensor, INPUT);  // setea el pin del  ESP32 en modo entrada para leer los datos del sensor pir
 }
 
-void readStatusPirSensor(Relay relay) {
+void readStatusPirSensor() {
 
    previousStatusPirSensor = currentStatusPirSensor; 
   currentStatusPirSensor = digitalRead(pir_sensor);   
 
     
   if (previousStatusPirSensor == LOW && currentStatusPirSensor == HIGH) {   
-    //pirSensorDelay.start(1000);
+    
     Serial.println("Motion detected!");   
     digitalWrite(LED,HIGH);// esto prueba que esta funcionando el sensor enciende el led de la placa esp32 BORRAR
 
      Firebase.getInt(fbdo, "/pir_sensor/time_seconds");
     pirSensorDelay.start(fbdo.intData() * 1000);  // asigno el tiempo que va a estar encendio  el relay, es customizable por el usuario se pasa COMO PARAMETRO DESDE LA APLICACION
-                     
-    //Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
-    digitalWrite(relay.getPort(), 0);             // ENCIENDO EL RELAY 1
-    relay.setStatus(1);
+     enabledPir=true;                
+    Serial.println("MOVIMIENTO DETECTADO!");      // BORRAR
+    //digitalWrite(relay.getPort(), 0);             // ENCIENDO EL RELAY 1
+   // relay.setStatus(1);
   } else if (/*previousStatusPirSensor == HIGH && currentStatusPirSensor == LOW &&*/ pirSensorDelay.justFinished()) {   
     Serial.println("Motion stopped!");
-     digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
-    
-    digitalWrite(relay.getPort(), 1);  // APAGO EL RELAY 1
-    relay.setStatus(0);
+   digitalWrite(LED, LOW);  //BORRAR SOLO DE PRUEBA
+    enabledPir=false;
+   // digitalWrite(relay.getPort(), 1);  // APAGO EL RELAY 1
+   // relay.setStatus(0);
   }
-  writeDatabaseRelayStatus(relay);
+ // writeDatabaseRelayStatus(relay);
   }
 
   
@@ -210,10 +211,17 @@ void getAutomaticRelay(Relay relay) {
 
 void getUpdateRelay(Relay relay) {
   getAutomaticRelay(relay);
-  bool automatic=relay.getAutomatic();
-  if (automatic )
-   readStatusPirSensor(relay);
- else
+ // bool automatic=relay.getAutomatic();
+  
+   readStatusPirSensor();
+   if (enabledPir){
+relay.setStatus(1);
+   }
+   else{
+     relay.setStatus(0);
+
+   }
+ writeDatabaseRelayStatus(relay);
     getStatusRelay(relay);
 }
 
