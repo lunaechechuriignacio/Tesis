@@ -16,7 +16,7 @@ class Relay {
          void setStatus(int status);
      
          bool getAutomatic ();
-         void setAutomatic (bool automatic);
+         void setAutomatic (bool newAutomatic);
               
    
   private:

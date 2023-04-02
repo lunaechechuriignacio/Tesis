@@ -5,7 +5,7 @@ Relay::Relay() {
     port=0;
     number=0;
     status=0;
-    automatic= false;    
+    automatic=true;    
 }
 
 int Relay::getPort(){
