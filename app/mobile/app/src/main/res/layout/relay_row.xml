@@ -16,23 +16,23 @@
         android:text="RELAY" />
 
     <Switch
-        android:id="@+id/sw_relay_automatic"
+        android:id="@+id/sw_relay_auto"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="Automatic"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="40dp"
+        android:text="Auto"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/tv_relay" />
+        app:layout_constraintLeft_toRightOf="@id/tv_relay"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Switch
-        android:id="@+id/sw_relay_light"
+        android:id="@+id/sw_relay_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="8dp"
-        android:text="Light"
-        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="30dp"
+        android:text="Active"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/sw_relay_automatic" />
+        app:layout_constraintLeft_toRightOf="@id/sw_relay_auto"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

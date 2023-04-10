@@ -29,8 +29,8 @@ public class RelayViewHolder extends RecyclerView.ViewHolder {
     public RelayViewHolder(@NonNull View itemView) {
         super(itemView);
         this.tvRelay = itemView.findViewById(R.id.tv_relay);
-        this.swRelayAutomatic = itemView.findViewById(R.id.sw_relay_automatic);
-        this.swRelayLight = itemView.findViewById(R.id.sw_relay_light);
+        this.swRelayAutomatic = itemView.findViewById(R.id.sw_relay_auto);
+        this.swRelayLight = itemView.findViewById(R.id.sw_relay_active);
     }
 
     public void bind(Relay relay) {
