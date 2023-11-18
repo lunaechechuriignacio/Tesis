@@ -108,11 +108,9 @@ void connectWifi() {
   // Nacho
   wifiMulti.addAP("ARGENFARMA-CAMARA", "juansalierno2016");
   wifiMulti.addAP("JUANIBIANCA", "00429191276");
-  wifiMulti.addAP("ssid_3", "contrasenna_3");
-
-  // Gonza
-  // wifiMulti.addAP("Aorus", "Elsa220263");
-  // wifiMulti.addAP("GonzaloNahuelDP", "*GNahuel1993*");
+  //mobile Access Point Wifi
+  wifiMulti.addAP("Nachox", "juanibianca");
+  wifiMulti.addAP("GonzaloNahuelDP", "*GNahuel1993*");
 
   WiFi.mode(WIFI_STA);
   Serial.print("Conectando a Wifi ...");
