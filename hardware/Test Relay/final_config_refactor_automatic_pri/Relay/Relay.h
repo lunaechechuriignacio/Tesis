@@ -16,16 +16,14 @@ class Relay {
          void setStatus(int status);
      
          bool getAutomatic ();
-         void setAutomatic (bool automatic);
-         
-      
+         void setAutomatic (bool newAutomatic);
+              
    
   private:
            int number;
            int port;
            int status;
-           bool automatic;        
-     
+           bool automatic;      
 };
 #endif
 

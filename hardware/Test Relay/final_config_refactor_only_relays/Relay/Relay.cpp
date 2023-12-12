@@ -5,7 +5,7 @@ Relay::Relay() {
     port=0;
     number=0;
     status=0;
-    automatic= false;    
+      
 }
 
 int Relay::getPort(){
@@ -33,11 +33,5 @@ void Relay::setStatus(int newStatus){
 }
 
 
-bool Relay::getAutomatic(){
-     return automatic;
-}
 
-void Relay::setAutomatic(bool newAutomatic){
-     automatic=newAutomatic;
-}    
 
