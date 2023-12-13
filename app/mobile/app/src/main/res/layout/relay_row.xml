@@ -29,7 +29,7 @@
         android:id="@+id/sw_relay_active"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="30dp"
+        android:layout_marginLeft="24dp"
         android:text="Active"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toRightOf="@id/sw_relay_auto"
